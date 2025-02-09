@@ -1,0 +1,10 @@
+ogr2ogr \
+  -f "PostgreSQL" \
+  -nln "census.blockgroups_2020" \
+  -nlt MULTIPOLYGON \
+  -t_srs EPSG:4326 \
+  -lco "GEOM_TYPE=geography" \
+  -lco "GEOMETRY_NAME=geog" \
+  -overwrite \
+  PG:"host=localhost port=5432 dbname=week04 user=yaohanxu" \
+  data/tl_2020_42_bg/tl_2020_42_bg.shp
