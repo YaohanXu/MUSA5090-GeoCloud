@@ -1,0 +1,4 @@
+node_modules/
+data/
+__pgdata__/
+.env
