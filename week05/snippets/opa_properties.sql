@@ -1,9 +1,36 @@
-CREATE OR REPLACE EXTERNAL TABLE `data_lake.phl_opa_properties`
+CREATE OR REPLACE EXTERNAL TABLE `data_lake.phl_pwd_parcels` (
+    `OBJECTID` STRING,
+    `PARCELID` STRING,
+    `TENCODE` STRING,
+    `ADDRESS` STRING,
+    `OWNER1` STRING,
+    `OWNER2` STRING,
+    `BLDG_CODE` STRING,
+    `BLDG_DESC'` STRING,
+    `BRT_ID` STRING,
+    `NUM_BRT` STRING,
+    `NUM_ACCOUNTS` STRING,
+    `GROSS_AREA` STRING,
+    `PIN` STRING,
+    `PARCEL_ID` STRING,
+    `Shape__Area'` STRING,
+    `Shape__Length` STRING,
+    `geog` STRING
+)
 OPTIONS (
-    description = 'Philadelphia OPA Properties - Raw Data',
-    uris = ['gs://mjumbepoe_data_lake/phl_opa_properties/*.jsonl'],
+    description = 'Philadelphia Stormwater Billing Parcels from PWD - Raw Data',
+    uris = ['gs://yaohan_data_lake/phl_parcels/*.jsonl'],
     format = 'JSON',
     max_bad_records = 0
+);
+
+CREATE OR REPLACE TABLE phl.pwd_parcels
+CLUSTER BY (geog)
+AS (
+    SELECT * REPLACE (
+        ST_GeogFromGeoJSON(geog, make_valid => TRUE) AS geog
+    )
+    FROM data_lake.phl_pwd_parcels
 );
 
 CREATE OR REPLACE EXTERNAL TABLE `data_lake.phl_opa_properties` (
@@ -102,7 +129,7 @@ AS (
         CAST(year_built AS INT64) AS year_built,
         CASE
             WHEN geog = 'null' THEN NULL
-            ELSE ST_GEOGFROMGEOJSON(geog)
+            ELSE ST_GEOGFROMGEOJSON(geog, make_valid => TRUE)
         END AS geog
     )
     FROM data_lake.phl_opa_properties
