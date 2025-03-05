@@ -1,6 +1,5 @@
 node_modules/
 env/
-.env
 *.pyc
 
 raw_data/*
@@ -9,3 +8,6 @@ package-lock.json
 
 # Service account credentials
 keys/
+
+# Environment variables
+.env
