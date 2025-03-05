@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import fetch from 'node-fetch';
 import fs from 'fs/promises';
 import path from 'path';
@@ -20,7 +23,7 @@ await fs.writeFile(filename, await response.text());
 console.log(`Downloaded ${filename}`);
 
 // Upload the downloaded file to Google Cloud Storage
-const bucketName = 'yaohan_data_lake';
+const bucketName = process.env.DATA_LAKE_BUCKET;
 const blobName = 'raw/phl_pwd_parcels/phl_pwd_parcels.geojson';
 
 const storageClient = new Storage();

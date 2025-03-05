@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
 import pathlib
 import requests
 from google.cloud import storage
@@ -17,7 +21,7 @@ with open(filename, 'wb') as f:
 print(f'Downloaded {filename}')
 
 # Upload the downloaded file to Google Cloud Storage
-bucket_name = 'yaohan_data_lake'
+bucket_name = os.getenv('DATA_LAKE_BUCKET')
 blob_name = 'raw/phl_pwd_parcels/phl_pwd_parcels.geojson'
 
 storage_client = storage.Client()
