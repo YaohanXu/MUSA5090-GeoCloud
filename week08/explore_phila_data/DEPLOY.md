@@ -76,10 +76,14 @@ gcloud iam service-accounts add-iam-policy-binding data-pipeline-robot-2025@musa
 ```shell
 TOKEN=$(gcloud auth print-identity-token --impersonate-service-account=data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com)
 
-echo $TOKEN
-
 curl -H "Authorization: Bearer $TOKEN" \
      "https://us-east1-musa-451221.cloudfunctions.net/run_sql?sql=data_lake/phl_opa_properties.sql"
+```
+
+```shell
+curl -X POST 'https://run-sql-328262866095.us-east1.run.app?sql=data_lake/phl_opa_properties.sql' \
+-H "Authorization: bearer $(gcloud auth print-identity-token)" \
+-H "Content-Type: application/json"
 ```
 
 pipeline workflow:
@@ -95,9 +99,9 @@ gcloud scheduler jobs create http phl-property-data-pipeline \
 --schedule='0 0 * * 2' \
 --time-zone='America/New_York' \
 --uri='https://workflowexecutions.googleapis.com/v1/projects/musa-451221/locations/us-east1/workflows/phl-property-data-pipeline/executions' \
---oidc-service-account-email='data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com'
+--oauth-service-account-email='data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com'
 ```
 
 ```shell
-gcloud workflows execute phl-property-data-pipeline --location=us-east1
+gcloud workflows execute phl-property-data-pipeline --location=us-east1 --impersonate-service-account='data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com'
 ```
