@@ -46,12 +46,16 @@ gcloud functions deploy prepare_phl_opa_properties \
 gcloud functions call prepare_phl_opa_properties --region=us-east1
 ```
 
+```shell
+gcloud functions logs read prepare_phl_opa_properties --region=us-east1
+```
+
 _run_sql_:
 
 ```shell
 gcloud functions deploy run_sql \
 --gen2 \
---region=us-central1 \
+--region=us-east1 \
 --runtime=nodejs20 \
 --source=. \
 --entry-point=run_sql \
@@ -64,23 +68,36 @@ gcloud functions deploy run_sql \
 ```
 
 ```shell
-gcloud functions call run_sql  --region=us-east1
+gcloud iam service-accounts add-iam-policy-binding data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com \
+    --member="user:xuyaohan99@gmail.com" \
+    --role="roles/iam.serviceAccountTokenCreator"
+```
+
+```shell
+TOKEN=$(gcloud auth print-identity-token --impersonate-service-account=data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com)
+
+echo $TOKEN
+
+curl -H "Authorization: Bearer $TOKEN" \
+     "https://us-east1-musa-451221.cloudfunctions.net/run_sql?sql=data_lake/phl_opa_properties.sql"
 ```
 
 pipeline workflow:
+
 ```shell
 gcloud workflows deploy phl-property-data-pipeline \
 --source=phl-property-data-pipeline.yaml \
---location=us-central1 \
---service-account='data-pipeline-robot-2024@musa-344004.iam.gserviceaccount.com'
+--location=us-east1 \
+--service-account='data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com'
 
 gcloud scheduler jobs create http phl-property-data-pipeline \
---schedule='0 0 * * 1' \
+--location=us-east1 \
+--schedule='0 0 * * 2' \
 --time-zone='America/New_York' \
---uri='https://workflowexecutions.googleapis.com/v1/projects/musa-344004/locations/us-central1/workflows/phl-property-data-pipeline/executions' \
---oauth-service-account-email='data-pipeline-robot-2024@musa-344004.iam.gserviceaccount.com' \
---oidc-service-account-email='data-pipeline-robot-2024@musa-344004.iam.gserviceaccount.com'
+--uri='https://workflowexecutions.googleapis.com/v1/projects/musa-451221/locations/us-east1/workflows/phl-property-data-pipeline/executions' \
+--oidc-service-account-email='data-pipeline-robot-2025@musa-451221.iam.gserviceaccount.com'
 ```
 
 ```shell
-gcloud workflows run phl-property-data-pipeline
+gcloud workflows execute phl-property-data-pipeline --location=us-east1
+```
