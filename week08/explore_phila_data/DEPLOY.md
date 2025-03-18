@@ -18,7 +18,7 @@ gcloud functions deploy extract_phl_opa_properties \
 ```
 
 ```shell
-gcloud functions call extract_phl_opa_propertiesc
+gcloud functions call extract_phl_opa_properties --region=us-east1
 ```
 
 ```shell
