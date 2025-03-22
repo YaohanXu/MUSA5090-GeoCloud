@@ -5,3 +5,9 @@ env/
 raw_data/*
 prepared_data/*
 package-lock.json
+
+# Service account credentials
+keys/
+
+# Environment variables
+.env
