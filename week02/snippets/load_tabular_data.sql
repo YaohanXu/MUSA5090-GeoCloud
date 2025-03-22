@@ -7,7 +7,7 @@ CREATE TABLE indego_stations
 );
 
 COPY indego_stations
-FROM '/path/to/indego_stations.csv'
+FROM '/Users/yaohanxu/Documents/GitHub/MUSA5090-GeoCloud/week02/exercises/indego-stations-2025-01-01-clean.csv'
 WITH (FORMAT csv, HEADER true);
 
 ALTER TABLE indego_stations
