@@ -1,0 +1,8 @@
+csvsql \
+  --db "postgresql://postgres:postgres@localhost:5432/week04" \
+  --insert \
+  --overwrite \
+  --create-if-not-exists \
+  --db-schema "septa" \
+  --tables "bus_stops" \
+  data/stops.txt
