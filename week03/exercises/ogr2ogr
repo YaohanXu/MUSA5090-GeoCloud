@@ -1,0 +1,17 @@
+ogr2ogr \
+  -f "PostgreSQL" \
+  -nln "parks" \
+  -lco "OVERWRITE=yes" \
+  -lco "GEOM_TYPE=geography" \
+  -lco "GEOMETRY_NAME=geog" \
+  -lco "SCHEMA=phl" \
+  PG:"host=localhost port=5432 dbname=week03 user=yaohanxu" \
+  "exercises/PPR_Properties.geojson"
+
+The -of value specifies the output format.
+The -nln value specifies the new layer name (i.e. the name of the new table in the database).
+The -lco lines represent other layer creation options you can specify (e.g. the geometry type, or the name of the geometry field), which vary according to the output format.
+The line that starts with PG: specifies the output location (in this case, a PostGIS table).
+The next line specifies the input location (in this case, a file on your computer). ogr2ogr will try to guess the input format, but you can also specify an -if option if you don't want it to guess.
+
+csvcut indego-stations-2025-01-01.csv --not-column 4-13 > indego-stations-clean.csv
